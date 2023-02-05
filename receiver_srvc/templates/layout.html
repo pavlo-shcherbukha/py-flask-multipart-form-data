@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='site.css') }}"  />
+    </head>
+
+    <body>
+        <div class="navbar">
+            <a href="{{ url_for('home') }}" class="navbar-brand">Home</a>
+            <a href="{{ url_for('about') }}" class="navbar-item">Про сервіс</a>
+            <a href="{{ url_for('uploader') }}" class="navbar-item">Файл завантажити</a>
+            <a href="{{ url_for('uploader_multi') }}" class="navbar-item">ФайлИ завантажити</a>
+        </div>
+
+        <div class="body-content">
+            {% block content %}
+            {% endblock %}
+            <hr/>
+            <footer>
+                <p>Сервіс обробки multipart/form-data </p>
+            </footer>
+        </div>
+    </body>
+</html>
