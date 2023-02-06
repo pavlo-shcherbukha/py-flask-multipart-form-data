@@ -92,7 +92,7 @@ def health():
 @application.route('/api/datareceiver', methods = ['POST'])
 def uploading_single_file():
     """
-        Processing uploading single file using html form 
+        Processing uploading single file using html form or programmatic http request multipart/form-data
     """
     label='uploading_single_file'
     pth_filestore="receiver_srvc/uplfiles"
@@ -128,16 +128,24 @@ def uploading_single_file():
 @application.route('/api/datareceivermulti', methods = ['POST'])
 def uploading_multi_file():
     """
-        Processing uploading multiple files using html form 
+        Processing uploading multiple files using html form  or programmatic http request multipart/form-data
     """
     
     label='uploading_multiple_files'
     pth_filestore="receiver_srvc/uplfiles"
     filelist=[]
-    
+
     log("Read form", label)
     fo = request.form
     log("Read file list", label)
+    # ~~~~~~~~~~~~~
+    # @url=https://werkzeug.palletsprojects.com/en/2.2.x/datastructures/
+    #  items(multi=False)
+    # Return an iterator of (key, value) pairs.
+    #   Parameters:
+    #    multi – If set to True the iterator returned will have a pair for each value of each key. 
+    #            Otherwise it will only contain pairs for the first value of each key
+
     for (key, file) in request.files.items( multi=True):
         log("Get file  name", label)
         filename=file.filename
@@ -160,29 +168,6 @@ def uploading_multi_file():
     return json.dumps( result ), 200, {'Content-Type':'application/json'}
 
 
-@application.route('/api/datareceiver', methods = ['POST'])
-def uploading_file():
-    label='uploading_file'
-    log("Read file liest", label)
-    fi = request.files
-    log("Read form", label)
-    fo = request.form
-
-
-    file = fi['file']
-    #files = {'file': file.read()}
-
-    filename=file.filename
-
-    filprm= {  "filename": file.filename, 
-               "contentType": file.content_type, 
-               "mimetype": file.mimetype
-            }
-
-    file.save("rrrrr.xml")
-
-    result={"ok": True, "prms": filprm, "formdata": fo }
-    return json.dumps( result ), 200, {'Content-Type':'application/json'}
 
 
 
