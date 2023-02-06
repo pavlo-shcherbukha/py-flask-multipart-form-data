@@ -135,12 +135,10 @@ def uploading_multi_file():
     pth_filestore="receiver_srvc/uplfiles"
     filelist=[]
     
-    log("Read file list", label)
-    fi = request.files.getlist("file")
     log("Read form", label)
     fo = request.form
-
-    for file in fi:
+    log("Read file list", label)
+    for (key, file) in request.files.items( multi=True):
         log("Get file  name", label)
         filename=file.filename
         log("File  name is " + filename, label)
@@ -148,7 +146,7 @@ def uploading_multi_file():
         log("Save file as  " + pth_filestore + "/"+ file.filename, label)
         file.save( pth_filestore + "/"+ file.filename)
         log("Save saved ", label)
-    
+
         log("Prepare response JSON ", label)
 
         fileprm= {  "filename": file.filename, 
@@ -157,6 +155,7 @@ def uploading_multi_file():
                     "stored": pth_filestore + "/"+ file.filename
         }
         filelist.append(fileprm)
+
     result={"ok": True, "file_params": filelist, "form_data_params": fo }
     return json.dumps( result ), 200, {'Content-Type':'application/json'}
 
