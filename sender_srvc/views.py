@@ -219,17 +219,17 @@ def send_realfilemulti():
     return json.dumps( result ), response.status, {'Content-Type':'application/json'}
 
 
-@application.route('/api/datasender2', methods = ['POST'])
-def send_data2():
+@application.route('/api/pysenddata', methods = ['GET'])
+def send_reqdata():
     """
-        вообще не працює
+        Send fake file as attachment  and form data using python requests module
     """
-    req_url='http://localhost:5010/api/datareceiver'
-    #hheaders={} 
-    #hheaders["content-type"]="multipart/form-data"
+    req_url=i_url_singlefile
     result={}
+    hheaders={}
 
     form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
+    # A fake file is let say byte array from  blob of database is XML-string
     file_data=( '<?xml version="1.0" encoding="UTF-8"?>'
                 '<note> '
                 '  <to>Tove</to>'
@@ -238,17 +238,18 @@ def send_data2():
                 '  <body>Do not forget me this weekend!</body>' 
 
                 '</note>')
+  
+    
 
-    fields={"form": (json.dumps( form_data ) ),   "file": ("note.xm;",  file_data, "text/xml")}
-    files = {'file': file_data }
- 
-    (content, header) = urllib3.encode_multipart_formdata(  fields )
-    hheaders={}
-    hheaders["content-type"]=header
-            ##response = requests.post(srvcurl, data=json.dumps(dataresp),  headers={"content-type": "application/json"})
-    response = requests.post(req_url,    files=content )
-    ##response = requests.post(req_url,  data=json.dumps({"dddd": "333333ddddd"}) , headers=hheaders )
-    #response = requests.post(srvcurl, data=bodydata,  headers=hheaders)
+    mp_encoder = MultipartEncoder(
+        fields={
+            'form': json.dumps(form_data),
+            'file': ('note.txt', file_data  , 'text/plain')
+        }
+    )
+
+
+    response = requests.post(req_url,  data=mp_encoder , headers={'Content-Type': mp_encoder.content_type} )    
 
     if response.status_code == 200:
         result['ok']=True
@@ -259,39 +260,28 @@ def send_data2():
         result['ok']=False
         result["error"]=response.text
         result["errorCode"]=response.status_code
-        log("!!!!!----Помилка при поверненні даних запитувачу: HttpStatusCode" + str(response.status_code), label)
-        log("!!!!!----Структура помилки:  "  + json.dumps( result ), label)
-    return json.dumps( result ), response.status, {'Content-Type':'application/json'}
+        log("!!!!!----Помилка при поверненні даних запитувачу: HttpStatusCode" + str(response.status_code))
+        log("!!!!!----Структура помилки:  "  + json.dumps( result ))
+    return json.dumps( result ), response.status_code, {'Content-Type':'application/json'}
 
 
-@application.route('/api/datasender3', methods = ['POST'])
+@application.route('/api/pysendfile', methods = ['GET'])
 def send_data3():
     """
-        номально працбє, як потрібно
-        ваіант-1 і варіанті 3,4
+        Send real single file as attachment  and form data using python requests module
 
     """
-    req_url='http://localhost:5010/api/datareceiver'
-
-    #xform=request.form
-    #xfiles=request.files
+    req_url=i_url_singlefile
+    pth_file=i_file_store
     result={}
-    hheaders={}
-    hheaders["content-type"]="application/json"
-    bodydata=json.dumps( {"dddd": "333333ddddd"}  )
-
-
-   
-    files = {'file':  open('C:/PSHDEV/PSH-WorkShops/github-io/tz-000007-py-flask-multypart/py-flask-multipart-form-data/sender_srvc/upload/botico.png', 'rb')}
+    form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
+    f=open(  pth_file + '/botico.png', 'rb')
 
     mp_encoder = MultipartEncoder(
         fields={
-            'foo': 'bar',
-            # plain file object, no filename or mime type produces a
-            # Content-Disposition header with just the part name
-            'file': ('botico.png', open('C:/PSHDEV/PSH-WorkShops/github-io/tz-000007-py-flask-multypart/py-flask-multipart-form-data/sender_srvc/upload/botico.png', 'rb'), 'image/png'),
-    }
-
+            'form': json.dumps(form_data),
+            'file': ('botico.png', f, 'image/png'),
+        }   
     )
 
 
@@ -311,33 +301,26 @@ def send_data3():
     return json.dumps( result ), response.status_code, {'Content-Type':'application/json'}
 
 
-@application.route('/api/datasender4', methods = ['POST'])
-def send_data4():
-    """
-        номально працбє, як потрібно
-        ваіант-1 і варіанті 3,4
-    """
-    req_url='http://localhost:5010/api/datareceiver'
 
-    #xform=request.form
-    #xfiles=request.files
+@application.route('/api/pysendfilemulti', methods = ['GET'])
+def send_filemulti():
+    """
+        Send real multi files as attachments  and form data using python requests module
+
+    """
+    req_url=i_url_multifile
+    pth_file=i_file_store
     result={}
-    hheaders={}
-    hheaders["content-type"]="application/json"
-    bodydata=json.dumps( {"dddd": "333333ddddd"}  )
-
-
-   
-    files = {'file':  open('C:/PSHDEV/PSH-WorkShops/github-io/tz-000007-py-flask-multypart/py-flask-multipart-form-data/sender_srvc/upload/botico.png', 'rb')}
+    form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
+    f=open(  pth_file + '/botico.png', 'rb')
+    d=open(  pth_file + '/dream.jpg', 'rb')
 
     mp_encoder = MultipartEncoder(
         fields={
-            'foo': 'bar',
-            # plain file object, no filename or mime type produces a
-            # Content-Disposition header with just the part name
-            'file': ('botico.txt', "dddd gfdgfdgf fgdgdsgsd sgsdgsdgsdg"  , 'text/plain'),
-    }
-
+            'form': json.dumps(form_data),
+            'file1': ('botico.png', f, 'image/png'),
+            'file2': ('dream.jpg', d, 'image/jpg')
+        }   
     )
 
 
@@ -355,7 +338,6 @@ def send_data4():
         log("!!!!!----Помилка при поверненні даних запитувачу: HttpStatusCode" + str(response.status_code))
         log("!!!!!----Структура помилки:  "  + json.dumps( result ))
     return json.dumps( result ), response.status_code, {'Content-Type':'application/json'}
-
 
 
 
