@@ -99,11 +99,11 @@ def uploading_single_file():
     log("Read file liest", label)
     fi = request.files
     log("Read form", label)
-    fo = request.form
+    fo = request.form.to_dict(flat=True)
 
     log("Get file context", label)
     file = fi['file']
-    #files = {'file': file.read()}
+    
     log("Get file  name", label)
     filename=file.filename
     log("File  name is " + filename, label)
