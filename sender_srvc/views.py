@@ -91,8 +91,8 @@ def health():
 """
 
 
-@application.route('/api/datasender', methods = ['GET'])
-def send_data():
+@application.route('/api/url3senddata', methods = ['GET'])
+def url3_send_data():
     """
         Send a single fake file as attachment and some form data using url3 lib
         A fake file is let say byte array from  blob of database
@@ -101,7 +101,7 @@ def send_data():
     result={}
     label="send_data" 
 
-    form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
+    #form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
     # A fake file is let say byte array from  blob of database is XML-string
     file_data=( '<?xml version="1.0" encoding="UTF-8"?>'
                 '<note> '
@@ -112,7 +112,13 @@ def send_data():
 
                 '</note>')
 
-    fields={"form": (json.dumps( form_data ) ),   "file": ("note.xml",  file_data, "text/xml")}
+    fields={
+            "order_num": "1234", 
+            "custname_name": "Nude Beringer", 
+            "order_date": "2023-02-04", 
+            "delivery_options": "some options",  
+            "file": ("note.xml",  file_data, "text/xml")
+    }
     http = urllib3.PoolManager()
     response = http.request(
                 "POST",
@@ -134,8 +140,8 @@ def send_data():
 
     return json.dumps( result ), response.status, {'Content-Type':'application/json'}
 
-@application.route('/api/senderfile', methods = ['GET'])
-def send_realfile():
+@application.route('/api/url3sendfile', methods = ['GET'])
+def url3_send_realfile():
     """
         Send a single real file as attachment and some form data using url3 lib
     """
@@ -146,8 +152,14 @@ def send_realfile():
 
     f=open(  pth_file + '/botico.png', 'rb')
 
-    form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
-    fields={"form": (json.dumps( form_data ) ), 'file': ('botico.png', f.read(), 'image/png')}
+    #form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
+    fields={
+        "order_num": "1234", 
+        "custname_name": "Nude Beringer", 
+        "order_date": "2023-02-04", 
+        "delivery_options": "some options",        
+        'file': ('botico.png', f.read(), 'image/png')
+    }
     http = urllib3.PoolManager()
     try:
         response = http.request(
@@ -174,8 +186,8 @@ def send_realfile():
 
 
 
-@application.route('/api/sendmultif', methods = ['GET'])
-def send_realfilemulti():
+@application.route('/api/url3sendfilemulti', methods = ['GET'])
+def url3_send_realfilemulti():
     """
         Send a multi real files as attachments and some form data using url3 lib
     """
@@ -187,10 +199,14 @@ def send_realfilemulti():
     f=open(  pth_file + '/botico.png', 'rb')
     d=open(  pth_file + '/dream.jpg', 'rb')
 
-    form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
-    fields={ "form": (json.dumps( form_data ) ),    
-                                                        'file1': ('botico.png', f.read(), 'image/png') , 
-                                                        'file2': ('dream.jpg', d.read(), 'image/jpg' )  
+    #form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
+    fields={ 
+            "order_num": "1234", 
+            "custname_name": "Nude Beringer", 
+            "order_date": "2023-02-04", 
+            "delivery_options": "some options",
+            'file1': ('botico.png', f.read(), 'image/png') , 
+            'file2': ('dream.jpg', d.read(), 'image/jpg' )  
                                                      
     }
     http = urllib3.PoolManager()
@@ -219,16 +235,21 @@ def send_realfilemulti():
     return json.dumps( result ), response.status, {'Content-Type':'application/json'}
 
 
+"""
+    ===========================================================================
+     Send multipart/form data using  python requests and requests_toolbelt.multipart.encoder
+    ===========================================================================
+"""
+
 @application.route('/api/pysenddata', methods = ['GET'])
-def send_reqdata():
+def py_send_data():
     """
         Send fake file as attachment  and form data using python requests module
     """
     req_url=i_url_singlefile
     result={}
     hheaders={}
-
-    form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
+    
     # A fake file is let say byte array from  blob of database is XML-string
     file_data=( '<?xml version="1.0" encoding="UTF-8"?>'
                 '<note> '
@@ -243,7 +264,10 @@ def send_reqdata():
 
     mp_encoder = MultipartEncoder(
         fields={
-            'form': json.dumps(form_data),
+            "order_num": "1234", 
+            "custname_name": "Nude Beringer", 
+            "order_date": "2023-02-04", 
+            "delivery_options": "some options",
             'file': ('note.txt', file_data  , 'text/plain')
         }
     )
@@ -266,7 +290,7 @@ def send_reqdata():
 
 
 @application.route('/api/pysendfile', methods = ['GET'])
-def send_data3():
+def py_send_file():
     """
         Send real single file as attachment  and form data using python requests module
 
@@ -274,17 +298,23 @@ def send_data3():
     req_url=i_url_singlefile
     pth_file=i_file_store
     result={}
-    form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
+    #form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
+    #form_data=("order_num", 1234), ("custname_name", "Nude Beringer"), ("order_date", "2023-02-04"), ("delivery_options", "some options")]
     f=open(  pth_file + '/botico.png', 'rb')
 
-    mp_encoder = MultipartEncoder(
-        fields={
-            'form': json.dumps(form_data),
-            'file': ('botico.png', f, 'image/png'),
-        }   
-    )
+    try:
+        mp_encoder = MultipartEncoder(
+            fields={
+                "order_num": "1234", 
+                "custname_name": "Nude Beringer", 
+                "order_date": "2023-02-04", 
+                "delivery_options": "some options",
+                'file': ('botico.png', f, 'image/png'),
+            }   
+        )
 
-
+    except Exception as e: 
+        print( e )
     response = requests.post(req_url,  data=mp_encoder , headers={'Content-Type': mp_encoder.content_type} )    
 
     if response.status_code == 200:
@@ -303,7 +333,7 @@ def send_data3():
 
 
 @application.route('/api/pysendfilemulti', methods = ['GET'])
-def send_filemulti():
+def py_send_filemulti():
     """
         Send real multi files as attachments  and form data using python requests module
 
@@ -311,13 +341,16 @@ def send_filemulti():
     req_url=i_url_multifile
     pth_file=i_file_store
     result={}
-    form_data={"order_num": 1234, "custname_name": "Nude Beringer", "order_date": "2023-02-04", "delivery_options": "some options"}
+    form_data={("order_num", 1234), ("custname_name", "Nude Beringer"), ("order_date", "2023-02-04"), ("delivery_options", "some options")}
     f=open(  pth_file + '/botico.png', 'rb')
     d=open(  pth_file + '/dream.jpg', 'rb')
 
     mp_encoder = MultipartEncoder(
         fields={
-            'form': json.dumps(form_data),
+            "order_num": "1234", 
+            "custname_name": "Nude Beringer", 
+            "order_date": "2023-02-04", 
+            "delivery_options": "some options",
             'file1': ('botico.png', f, 'image/png'),
             'file2': ('dream.jpg', d, 'image/jpg')
         }   
