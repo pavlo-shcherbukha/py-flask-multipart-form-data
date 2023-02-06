@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Upload New File</title>
+</head>
+
+<body>
+    <h1>Upload One File</h1>
+
+    <a href="/">GO Home</a>
+    <BR/><BR/>
+
+    <form action="/api/datareceiver" method="post" enctype="multipart/form-data">
+
+
+        <label for="fname">First Name:</label>
+        <input type = "text" name = "fname" value="" size="64"/>
+        <BR/><BR/>
+        <label for="mname">SoName:</label>
+        <input type = "text" name = "mname" value="" size="64"/>
+        <BR/><BR/>
+        <label for="lname">Last Name:</label>
+        <input type = "text" name = "lname" value="" size="64"/>
+        <BR/><BR/>
+        <label for="file">Chose file for uploading and press "Upload":</label>
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
+    </form>
+
+</body>
+
+</html>

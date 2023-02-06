@@ -1,0 +1,72 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "sender_srvc : Remote Attach",
+            "type": "python",
+            "request": "attach",
+            "port": 5678,
+            "host": "0.0.0.0",
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "/opt/app-root/src"
+                }
+            ]
+        },
+        {
+            "name": "receiver_srvc : Remote Attach",
+            "type": "python",
+            "request": "attach",
+            "port": 5678,
+            "host": "0.0.0.0",
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "/opt/app-root/src"
+                }
+            ]
+        },
+        {
+            "name": "sender_srvc: Win Flask",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "sender_srvc.webapp",
+                "FLASK_ENV": "development",
+                "FLASK_DEBUG": "0",
+                "DATA_URL": "http://localhost:5010/api/datareceiver",
+                "DATAMULTI_URL": "http://localhost:5010/api/datareceivermulti",
+                "FILE_STORE": "sender_srvc/upload"
+            },
+            "args": [
+                "run",
+                "--no-debugger",
+                "--no-reload",
+                "--port",
+                "5000"
+            ],
+            "jinja": true
+        },
+        {
+            "name": "receiver_srvc: Win Flask",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "receiver_srvc.webapp",
+                "FLASK_ENV": "development",
+                "FLASK_DEBUG": "0"
+                        },
+            "args": [
+                "run",
+                "--no-debugger",
+                "--no-reload",
+                "--port",
+                "5010"
+            ],
+            "jinja": true
+        }
+    ]
+}
