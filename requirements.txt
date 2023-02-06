@@ -4,6 +4,3 @@ requests
 datetime
 requests-toolbelt
 urllib3
-
-#cloudant
-#CouchDB2
